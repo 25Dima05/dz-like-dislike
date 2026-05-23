@@ -2,6 +2,9 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import FilmCard from './components/FilmCard' 
+import LikedFilm from './components/LikedFilms'
+import DislikedFilm from './components/DislikedFilms'
 import './App.css'
 
 function App() {
@@ -13,7 +16,7 @@ const textStyle = {
 const [films, setFilms] = useState([
     {
         id: 1,
-        name: "Олдбой",
+        title: "Олдбой",
         year: "2003",
         genre: "Триллер, детектив, драма, криминал",
 
@@ -25,7 +28,7 @@ const [films, setFilms] = useState([
     },
     {
         id: 2,
-        name: "Таинственная река",
+        title: "Таинственная река",
         year: "2003",
         genre: "Триллер, детектив, драма, криминал",
 
@@ -37,7 +40,7 @@ const [films, setFilms] = useState([
     },
     {
         id: 3,
-        name: "Пленницы",
+        title: "Пленницы",
         year: "2013",
         genre: "Триллер, детектив, драма, криминал",
 
@@ -49,7 +52,7 @@ const [films, setFilms] = useState([
     },
     {
         id: 4,
-        name: "Семь",
+        title: "Семь",
         year: "1995",
         genre: "Триллер, детектив, драма, криминал",
 
@@ -67,6 +70,9 @@ const sortedFilms = [...films].sort((a, b) => {
 
     return sumA - sumB;
 })
+
+const likedFilms = films.filter(film => film.likeFlag === true)
+const dislikedFilms = films.filter(film => film.dislikeFlag === true)
 
 function likeMinus(arrFilm) {
     return {
@@ -148,22 +154,62 @@ function handleDislike(filmId) {
                     const dislikeColor = n.dislikeFlag && !n.likeFlag ? "red" : null
 
                     return (
-                        <div className='container' key={n.id}>
-                            <h1 style={textStyle}>{n.name}</h1>
-                            <p style={textStyle}>{n.year}</p>
-                            <p style={textStyle}>{n.genre}</p>
+                        <FilmCard
+                            key={n.id}
+                            title={n.title}
+                            date={n.date}
+                            genre={n.genre}
+                            like={n.like}
+                            dislike={n.dislike}
+                            likeColor={likeColor}
+                            dislikeColor={dislikeColor}
+                            handleLike={() => handleLike(n.id)}
+                            handleDislike={() => handleDislike(n.id)}
+                        /> 
+                    )    
+                })}
 
-                            <p>Нравится: {n.like}</p>
-                            <p>Не нравится: {n.dislike}</p>
+                <p>Мне понравилось ({likedFilms.length})</p>
+                {likedFilms.map(n => {
+                    const likeColor = n.likeFlag && !n.dislikeFlag ? "green" : null 
+                        //не могу убрать n.likeFlag или !n.dislikeFlag , цвет кнопок ломается 
+                    const dislikeColor = n.dislikeFlag && !n.likeFlag ? "red" : null
 
-                            <button style={{
-                                backgroundColor: likeColor
-                            }} className='actionButton' onClick={() => handleLike(n.id)}>Нравится</button>
+                    return (
+                            <LikedFilm
+                            key={n.id}
+                            title={n.title}
+                            date={n.date}
+                            genre={n.genre}
+                            like={n.like}
+                            dislike={n.dislike}
+                            likeColor={likeColor}
+                            dislikeColor={dislikeColor}
+                            handleLike={() => handleLike(n.id)}
+                            handleDislike={() => handleDislike(n.id)}
+                        /> 
+                    )    
+                })}
 
-                            <button style={{
-                                backgroundColor: dislikeColor
-                            }} className='actionButton' onClick={() => handleDislike(n.id)}>Не нравится</button>
-                        </div> 
+                <p>Мне не понравилось ({dislikedFilms.length})</p>
+                {dislikedFilms.map(n => {
+                    const likeColor = n.likeFlag && !n.dislikeFlag ? "green" : null 
+                        //не могу убрать n.likeFlag или !n.dislikeFlag , цвет кнопок ломается 
+                    const dislikeColor = n.dislikeFlag && !n.likeFlag ? "red" : null
+
+                    return (
+                            <DislikedFilm
+                            key={n.id}
+                            title={n.title}
+                            date={n.date}
+                            genre={n.genre}
+                            like={n.like}
+                            dislike={n.dislike}
+                            likeColor={likeColor}
+                            dislikeColor={dislikeColor}
+                            handleLike={() => handleLike(n.id)}
+                            handleDislike={() => handleDislike(n.id)}
+                        /> 
                     )    
                 })}
             </div>
