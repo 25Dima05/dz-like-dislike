@@ -6,14 +6,14 @@ const LikedCard = ({
     genre,
     like,
     dislike,
-    likeColor,
-    dislikeColor,
+    likeFlag,
+    dislikeFlag,
     handleLike,
     handleDislike
 }) => {
 
 return (
-    <div className={likeColor}>
+    <div className={likeFlag ? "green" : null}>
         <h1 style={{color: "violet"}}>{title}</h1>
             <p style={{color: "violet"}}>{date}</p>
             <p style={{color: "violet"}}>{genre}</p>
@@ -21,11 +21,11 @@ return (
             <p>{dislike}</p>
 
             <button style={{
-                backgroundColor: likeColor
+                backgroundColor: likeFlag ? "green" : null 
             }} className='actionButton' onClick={handleLike}>Нравится</button>
 
             <button style={{
-                backgroundColor: dislikeColor
+                backgroundColor: dislikeFlag ? "red" : null
             }} className='actionButton' onClick={handleDislike}>Не нравится</button>
     </div>
 )}
