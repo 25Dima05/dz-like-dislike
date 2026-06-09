@@ -1,39 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import FilmCard from './components/FilmCard' 
-import LikedFilm from './components/LikedFilms'
-import DislikedFilm from './components/DislikedFilms'
+import Reactions from './components/Reactions'
+import CountView from './components/CountView'
+import FilterFilms from './components/FilterFilms'
 import './App.css'
-import { useEffect } from 'react'
 
 function App() {
-
-function CountView({films}) {
-    const [count, setCount] = useState(0);
-
-    useEffect(() => {
-            const summView = films.reduce((result, film) => result + film.view, 0);
-            setCount(summView);
-        }, [films]);
-     return (
-        <div>
-            <p>Просмотрено: {count}</p>
-        </div>
-     )
-}
 
 const textStyle = {
     color: "violet",
 }
 
+// // // Список фильмов
 const [films, setFilms] = useState([
     {
         id: 1,
         title: "Олдбой",
         date: "2003",
-        genre: "Триллер, детектив, драма, криминал",
+        genre: "триллер, детектив, драма, криминал",
 
         like: 131,
         dislike: 29,
@@ -47,7 +34,7 @@ const [films, setFilms] = useState([
         id: 2,
         title: "Таинственная река",
         date: "2003",
-        genre: "Триллер, детектив, драма, криминал",
+        genre: "триллер, детектив, драма, криминал",
 
         like: 180,
         dislike: 23,
@@ -61,7 +48,7 @@ const [films, setFilms] = useState([
         id: 3,
         title: "Пленницы",
         date: "2013",
-        genre: "Триллер, детектив, драма, криминал",
+        genre: "триллер, детектив, драма, криминал",
 
         like: 202,
         dislike: 47,
@@ -75,7 +62,7 @@ const [films, setFilms] = useState([
         id: 4,
         title: "Семь",
         date: "1995",
-        genre: "Триллер, детектив, драма, криминал",
+        genre: "триллер, детектив, драма, криминал",
 
         like: 131,
         dislike: 25,
@@ -84,19 +71,76 @@ const [films, setFilms] = useState([
         dislikeFlag: false,
 
         view: 0
+    },
+    {
+        id: 5,
+        title: "Большой куш",
+        date: "2000",
+        genre: "криминал, комедия, боевик",
+
+        like: 104,
+        dislike: 37,
+
+        likeFlag: false,
+        dislikeFlag: false,
+
+        view: 0
+    },
+    {
+        id: 6,
+        title: "12 обезьян",
+        date: "1995",
+        genre: "фантастика, триллер, детектив",
+
+        like: 67,
+        dislike: 9,
+
+        likeFlag: false,
+        dislikeFlag: false,
+
+        view: 0
+    },
+    {
+        id: 7,
+        title: "1408",
+        date: "2007",
+        genre: "ужасы, триллер",
+
+        like: 140,
+        dislike: 36,
+
+        likeFlag: false,
+        dislikeFlag: false,
+
+        view: 0
     }
 ])
 
-const sortedFilms = [...films].sort((a, b) => {
+// // // Поиск
+const [search, setSearch] = useState('');
+const q = search.trim().toLowerCase();
+
+const matchesSearch = (film) => {
+    if (!q) return true;
+    const titleSearch = film.title.toLowerCase();
+    const genreSearch = film.genre.toLowerCase();
+    const dateSearch = film.date.toLowerCase();
+    return titleSearch.includes(q) || genreSearch.includes(q) || dateSearch.includes(q);
+};
+
+// // // Сортировка
+const sortedFilms = [...films].filter(matchesSearch).sort((a, b) => {
     const sumA = a.like + a.dislike;
     const sumB = b.like + b.dislike;
 
     return sumA - sumB;
-})
+});
 
+// // // Списки понравилось/не понравилось
 const likedFilms = films.filter(film => film.likeFlag);
 const dislikedFilms = films.filter(film => film.dislikeFlag);
 
+// // // Функции лайка/дизлайка
 function likeMinus(arrFilm) {
     return {
         ...arrFilm,
@@ -173,8 +217,11 @@ function handleDislike(filmId) {
     return (
         <div>
             <div>
-                {sortedFilms.map(n => {
-                    return (
+                <FilterFilms value={search} onChange={setSearch} />
+                {sortedFilms.length === 0 ? (
+                    <p>Ничего не найдено</p>
+                ) : (
+                sortedFilms.map(n => (
                         <FilmCard
                             key={n.id}
                             title={n.title}
@@ -187,14 +234,14 @@ function handleDislike(filmId) {
                             handleLike={() => handleLike(n.id)}
                             handleDislike={() => handleDislike(n.id)}
                         /> 
-                    )    
-                })}
+                    ))    
+                 )}
                 
 
                 <p>Мне понравилось ({likedFilms.length})</p>
                 {likedFilms.map(n => {
                     return (
-                            <LikedFilm
+                            <Reactions
                             key={n.id}
                             title={n.title}
                             date={n.date}
@@ -212,7 +259,7 @@ function handleDislike(filmId) {
                 <p>Мне не понравилось ({dislikedFilms.length})</p>
                 {dislikedFilms.map(n => {
                     return (
-                            <DislikedFilm
+                            <Reactions
                             key={n.id}
                             title={n.title}
                             date={n.date}
@@ -227,12 +274,12 @@ function handleDislike(filmId) {
                     )    
                 })}
             </div>
-            <div className='countView'>
-                <CountView films={films}/>
-            </div>
-               
+
+                <div className='countView'>
+                    <CountView films={films}/>
+                </div>
+
         </div>
-        
     )
 }
 

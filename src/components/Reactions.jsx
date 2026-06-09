@@ -1,6 +1,6 @@
 import '../App.css'
 
-const LikedCard = ({
+const Reactions = ({
     title,
     date,
     genre,
@@ -12,8 +12,13 @@ const LikedCard = ({
     handleDislike
 }) => {
 
+const colorButton = "";
+
+if (likeFlag) "green";
+if (dislikeFlag) "red";    
+
 return (
-    <div className={likeFlag ? "green" : null}>
+    <div className={colorButton}>
         <h1 style={{color: "violet"}}>{title}</h1>
             <p style={{color: "violet"}}>{date}</p>
             <p style={{color: "violet"}}>{genre}</p>
@@ -30,4 +35,4 @@ return (
     </div>
 )}
 
-export default LikedCard
+export default Reactions
