@@ -1,19 +1,24 @@
 import '../App.css'
 
-const DislikedCard = ({
+const Reactions = ({
     title,
     date,
     genre,
     like,
     dislike,
-    likeColor,
-    dislikeColor,
+    likeFlag,
+    dislikeFlag,
     handleLike,
     handleDislike
 }) => {
 
+const colorButton = "";
+
+if (likeFlag) "green";
+if (dislikeFlag) "red";    
+
 return (
-    <div className={dislikeColor}>
+    <div className={colorButton}>
         <h1 style={{color: "violet"}}>{title}</h1>
             <p style={{color: "violet"}}>{date}</p>
             <p style={{color: "violet"}}>{genre}</p>
@@ -21,13 +26,13 @@ return (
             <p>{dislike}</p>
 
             <button style={{
-                backgroundColor: likeColor
+                backgroundColor: likeFlag ? "green" : null 
             }} className='actionButton' onClick={handleLike}>Нравится</button>
 
             <button style={{
-                backgroundColor: dislikeColor
+                backgroundColor: dislikeFlag ? "red" : null
             }} className='actionButton' onClick={handleDislike}>Не нравится</button>
     </div>
 )}
 
-export default DislikedCard
+export default Reactions
