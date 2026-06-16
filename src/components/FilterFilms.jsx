@@ -1,24 +1,69 @@
 import { useState } from 'react'
 import '../App.css'
 
-const FilterFilms = ({value, onChange}) => (
-  <div style={{
-    padding: "20px",
-    fontSize: "20px"
-    }}>
-    <p>Поиск</p>
-    
-    <input
-      type="text"
-      value={value}
-      onChange={(n) => onChange(n.target.value)}
-      placeholder={'название, жанр, год'}
-      style={{
-        width: "30%",
-        fontSize: "20px"
-      }}
-    />
-  </div>
-);
+const FilterFilms = ({
+    title,
+    yearFrom,
+    yearTo,
+    genreFilter,
+    searchTitle,
+    searchYearFrom,
+    searchYearTo,
+    searchGenre,
+}) => {
+    const genres = [
+        '',
+        'триллер',
+        'детектив',
+        'драма',
+        'криминал',
+        'комедия',
+        'боевик',
+        'фантастика',
+        'ужасы',
+    ];
+
+  return (
+    <div style={{ marginBottom: '20px' }}>
+        <input
+            type="text"
+            placeholder="Название фильма"
+            value={title}
+            onChange={(e) => searchTitle(e.target.value)}
+            style={{ marginRight: '8px', border: "2px solid violet" }}
+        />
+        <input
+            type="number"
+            placeholder="Год от"
+            value={yearFrom}
+            onChange={(e) => searchYearFrom(e.target.value)}
+            style={{ marginRight: '8px', width: '80px', border: "2px solid violet" }}
+        />
+        <input
+            type="number"
+            placeholder="Год до"
+            value={yearTo}
+            onChange={(e) => searchYearTo(e.target.value)}
+            style={{ marginRight: '8px', width: '80px', border: "2px solid violet" }}
+        />
+        <select
+            value={genreFilter}
+            style={{ marginRight: '8px', width: '100px', border: "2px solid violet" }}
+            onChange={(e) => searchGenre(e.target.value)}
+            
+        >
+        <option value="">Все жанры</option>
+        {genres
+            .filter((g) => g !== '')
+            .map((g) => (
+            <option key={g} value={g}>
+              {g}
+            </option>
+          ))}
+      </select>
+    </div>
+  );
+};
+
 
 export default FilterFilms
