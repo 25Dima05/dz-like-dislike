@@ -1,140 +1,192 @@
 import { useState, useEffect, useMemo} from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { v4 as uuidv4 } from 'uuid';
 import FilmCard from './components/FilmCard' 
 import Reactions from './components/Reactions'
 import CountView from './components/CountView'
 import FilterFilms from './components/FilterFilms'
+import classNames from 'classnames';
+import oldboyPoster from './assets/oldboyPoster.jpg';
+import monkeys from './assets/12Monkeys.jpg';
+import snatch from './assets/snatch.jpg';
+import seven from './assets/seven.jpg';
+import fourteenOhEight from './assets/1408.jpg';
+import mysticRiver from './assets/mysticRiver.jpg';
+import prisoners from './assets/prisoners.jpg';
+prisoners
 import './App.css'
 
 function App() {
 
 const textStyle = {
-    color: "violet",
+    color: "violet"
 }
 
 // // // Список фильмов
-const [films, setFilms] = useState([
-    {
-        id: 1,
-        title: "Олдбой",
-        date: "2003",
-        genre: "триллер, детектив, драма, криминал",
+const [films, setFilms] = useState([]);
+const [loading, setLoading] = useState(true);
 
-        like: 131,
-        dislike: 29,
+useEffect(() => {
+    const timerId = setTimeout(() => {
+        const timerFilms = [
+            {
+                id: uuidv4(),
+                title: "Олдбой",
+                poster: oldboyPoster,
+                date: "2003",
+                genre: "триллер, детектив, драма, криминал",
 
-        likeFlag: false,
-        dislikeFlag: false,
+                like: 131,
+                dislike: 29,
 
-        view: 0
-    },
-    {
-        id: 2,
-        title: "Таинственная река",
-        date: "2003",
-        genre: "триллер, детектив, драма, криминал",
+                likeFlag: false,
+                dislikeFlag: false,
 
-        like: 180,
-        dislike: 23,
+                view: 0
+            },
+            {
+                id: uuidv4(),
+                title: "Таинственная река",
+                poster: mysticRiver,
+                date: "2003",
+                genre: "триллер, детектив, драма, криминал",
 
-        likeFlag: false,
-        dislikeFlag: false,
+                like: 180,
+                dislike: 23,
 
-        view: 0
-    },
-    {
-        id: 3,
-        title: "Пленницы",
-        date: "2013",
-        genre: "триллер, детектив, драма, криминал",
+                likeFlag: false,
+                dislikeFlag: false,
 
-        like: 202,
-        dislike: 47,
+                view: 0
+            },
+            {
+                id: uuidv4(),
+                title: "Пленницы",
+                poster: prisoners,
+                date: "2013",
+                genre: "триллер, детектив, драма, криминал",
 
-        likeFlag: false,
-        dislikeFlag: false,
+                like: 202,
+                dislike: 47,
 
-        view: 0
-    },
-    {
-        id: 4,
-        title: "Семь",
-        date: "1995",
-        genre: "триллер, детектив, драма, криминал",
+                likeFlag: false,
+                dislikeFlag: false,
 
-        like: 131,
-        dislike: 25,
+                view: 0
+            },
+            {
+                id: uuidv4(),
+                title: "Семь",
+                poster: seven,
+                date: "1995",
+                genre: "триллер, детектив, драма, криминал",
 
-        likeFlag: false,
-        dislikeFlag: false,
+                like: 131,
+                dislike: 25,
 
-        view: 0
-    },
-    {
-        id: 5,
-        title: "Большой куш",
-        date: "2000",
-        genre: "криминал, комедия, боевик",
+                likeFlag: false,
+                dislikeFlag: false,
 
-        like: 104,
-        dislike: 37,
+                view: 0
+            },
+            {
+                id: uuidv4(),
+                title: "Большой куш",
+                poster: snatch,
+                date: "2000",
+                genre: "криминал, комедия, боевик",
 
-        likeFlag: false,
-        dislikeFlag: false,
+                like: 104,
+                dislike: 37,
 
-        view: 0
-    },
-    {
-        id: 6,
-        title: "12 обезьян",
-        date: "1995",
-        genre: "фантастика, триллер, детектив",
+                likeFlag: false,
+                dislikeFlag: false,
 
-        like: 67,
-        dislike: 9,
+                view: 0
+            },
+            {
+                id: uuidv4(),
+                title: "12 обезьян",
+                poster: monkeys,
+                date: "1995",
+                genre: "фантастика, триллер, детектив",
 
-        likeFlag: false,
-        dislikeFlag: false,
+                like: 67,
+                dislike: 9,
 
-        view: 0
-    },
-    {
-        id: 7,
-        title: "1408",
-        date: "2007",
-        genre: "ужасы, триллер",
+                likeFlag: false,
+                dislikeFlag: false,
 
-        like: 140,
-        dislike: 36,
+                view: 0
+            },
+            {
+                id: uuidv4(),
+                title: "1408",
+                poster: fourteenOhEight,
+                date: "2007",
+                genre: "ужасы, триллер",
 
-        likeFlag: false,
-        dislikeFlag: false,
+                like: 140,
+                dislike: 36,
 
-        view: 0
-    }
-])
+                likeFlag: false,
+                dislikeFlag: false,
+
+                view: 0
+            }
+        ]
+
+        setFilms(timerFilms);
+        setLoading(false);
+        }, 1500);
+
+        return () => clearTimeout(timerId);
+}, []);
 
 // // // Поиск
-const [search, setSearch] = useState('');
-const q = search.trim().toLowerCase();
+const [title, setTitle] = useState('');
+const [yearFrom, setYearFrom] = useState('');
+const [yearTo, setYearTo] = useState('');
+const [genreFilter, setGenreFilter] = useState('');
 
-const matchesSearch = (film) => {
-    if (!q) return true;
-    const titleSearch = film.title.toLowerCase();
-    const genreSearch = film.genre.toLowerCase();
-    const dateSearch = film.date.toLowerCase();
-    return titleSearch.includes(q) || genreSearch.includes(q) || dateSearch.includes(q);
-};
+const [filteredFilms, setFilteredFilms] = useState([]);
+
+useEffect(() => {
+    let result = [...films];
+
+    if (title.trim()) {
+    const q = title.trim().toLowerCase();
+    result = result.filter(f => f.title.toLowerCase().includes(q));
+    }
+
+    if (yearFrom.trim()) {
+        const year = Number(yearFrom);
+        if (!Number.isNaN(year)) {
+            result = result.filter(f => Number(f.date) >= year);
+        }
+    }
+
+    if (yearTo.trim()) {
+        const toYear = Number(yearTo);
+        if (!Number.isNaN(toYear)) {
+        result = result.filter(f => Number(f.date) <= toYear);
+        }
+    }
+
+    if (genreFilter) {
+        const g = genreFilter.toLowerCase();
+        result = result.filter(f => f.genre.toLowerCase().includes(g));
+    }
 
 // // // Сортировка
-const sortedFilms = [...films].filter(matchesSearch).sort((a, b) => {
-    const sumA = a.like + a.dislike;
-    const sumB = b.like + b.dislike;
+    result.sort((a, b) => {
+        const sumA = a.like + a.dislike;
+        const sumB = b.like + b.dislike;
 
-    return sumA - sumB;
-});
+        return sumA - sumB;
+    });
+
+    setFilteredFilms(result);
+}, [films, title, yearFrom, yearTo, genreFilter]);
 
 // // // Списки понравилось/не понравилось
 const likedFilms = films.filter(film => film.likeFlag);
@@ -217,14 +269,25 @@ function handleDislike(filmId) {
     return (
         <div>
             <div>
-                <FilterFilms value={search} onChange={setSearch} />
-                {sortedFilms.length === 0 ? (
+                <FilterFilms
+                    title={title}
+                    yearFrom={yearFrom}
+                    yearTo={yearTo}
+                    genreFilter={genreFilter}
+                    searchTitle={setTitle}
+                    searchYearFrom={setYearFrom}
+                    searchYearTo={setYearTo}
+                    searchGenre={setGenreFilter}
+                />
+
+                {filteredFilms.length === 0 ? (
                     <p>Ничего не найдено</p>
                 ) : (
-                sortedFilms.map(n => (
+                filteredFilms.map(n => (
                         <FilmCard
                             key={n.id}
                             title={n.title}
+                            poster={n.poster}
                             date={n.date}
                             genre={n.genre}
                             like={n.like}
@@ -244,6 +307,7 @@ function handleDislike(filmId) {
                             <Reactions
                             key={n.id}
                             title={n.title}
+                            poster={n.poster}
                             date={n.date}
                             genre={n.genre}
                             like={n.like}
@@ -262,6 +326,7 @@ function handleDislike(filmId) {
                             <Reactions
                             key={n.id}
                             title={n.title}
+                            poster={n.poster}
                             date={n.date}
                             genre={n.genre}
                             like={n.like}

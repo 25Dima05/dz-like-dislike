@@ -2,6 +2,7 @@ import '../App.css'
 
 const FilmCard = ({
     title,
+    poster,
     date,
     genre,
     like,
@@ -14,19 +15,28 @@ const FilmCard = ({
 
 return (
     <div className='container'>
+        <img className='poster' src={poster} alt={title} />
         <h1>{title}</h1>
-            <p>{date}</p>
-            <p>{genre}</p>
-            <p>{like}</p>
-            <p>{dislike}</p>
+        <div>{date}</div>
+        <div>{genre}</div>
+            
+        <div className='containerButtons'>
+            <div className='likeDislike'>
+                <div>{like}</div>
 
-            <button style={{
-                backgroundColor: likeFlag ? "green" : null
-            }} className='actionButton' onClick={handleLike}>Нравится</button>
+                <button style={{
+                    backgroundColor: likeFlag ? "green" : null
+                }} className='actionButton' onClick={handleLike}>Нравится</button>
+            </div>
+            
+            <div className='likeDislike'>
+                <div>{dislike}</div>
 
-            <button style={{
-                backgroundColor: dislikeFlag ? "red" : null
-            }} className='actionButton' onClick={handleDislike}>Не нравится</button>
+                <button style={{
+                    backgroundColor: dislikeFlag ? "red" : null
+                }} className='actionButton' onClick={handleDislike}>Не нравится</button>
+            </div>
+        </div>    
     </div>
     
 )}
