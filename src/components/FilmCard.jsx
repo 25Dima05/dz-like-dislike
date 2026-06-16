@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom'
 import '../App.css'
 
 const FilmCard = ({
+    id,
     title,
     poster,
     date,
@@ -14,12 +16,15 @@ const FilmCard = ({
 }) => {
 
 return (
+
     <div className='container'>
-        <img className='poster' src={poster} alt={title} />
-        <h1>{title}</h1>
-        <div>{date}</div>
-        <div>{genre}</div>
-            
+        <Link to={`/film/${id}`}>
+            <img className='poster' src={poster} alt={title} />
+            <h1>{title}</h1>
+            <div>{date}</div>
+            <div>{genre}</div>
+        </Link>      
+
         <div className='containerButtons'>
             <div className='likeDislike'>
                 <div>{like}</div>
