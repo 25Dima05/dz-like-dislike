@@ -1,6 +1,7 @@
 import { useState, useEffect} from 'react'
 import { useSearchParams, useNavigate, BrowserRouter, Routes, Route } from 'react-router-dom'
-import { filmsData } from './components/FilmsData';
+import { likeMinus, dislikeMinus, likePlus, dislikePlus } from './components/utils'
+import { filmsData } from './components/data';
 import FilmCard from './components/FilmCard' 
 import Reactions from './components/Reactions'
 import CountView from './components/CountView'
@@ -90,40 +91,6 @@ const likedFilms = films.filter(film => film.likeFlag);
 const dislikedFilms = films.filter(film => film.dislikeFlag);
 
 // // // Функции лайка/дизлайка
-function likeMinus(arrFilm) {
-    return {
-        ...arrFilm,
-        like: arrFilm.like - 1,
-        likeFlag: false,
-    }
-}
-
-function dislikeMinus(arrFilm) {
-    return {
-        ...arrFilm,
-        dislike: arrFilm.dislike - 1,
-        dislikeFlag: false,
-    } 
-}
-
-function likePlus(arrFilm) {
-    return {
-        ...arrFilm,
-        like: arrFilm.like + 1,
-        likeFlag: true,
-        view: arrFilm.view + 1
-    }
-}
-
-function dislikePlus(arrFilm) {
-    return {
-        ...arrFilm,
-        dislike: arrFilm.dislike + 1,
-        dislikeFlag: true,
-        view: arrFilm.view + 1
-    }
-}
-
 function handleLike(filmId) {
     setFilms(prevFilms => 
             prevFilms.map(film => {

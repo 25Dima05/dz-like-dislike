@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { filmsData } from './FilmsData';
+import { filmsData } from './data';
 
 export default function FilmDetail() {
   const { id } = useParams();
