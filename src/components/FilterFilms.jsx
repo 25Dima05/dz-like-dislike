@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import '../App.css'
 
 const FilterFilms = ({
@@ -23,9 +23,18 @@ const FilterFilms = ({
         'ужасы',
     ];
 
+    const refInput = useRef(null)
+
+    useEffect(() => {
+        if (refInput.current) {
+        refInput.current.focus()
+        }
+    }, [])
+
   return (
     <div style={{ marginBottom: '20px' }}>
         <input
+            ref={refInput}
             type="text"
             placeholder="Название фильма"
             value={title}

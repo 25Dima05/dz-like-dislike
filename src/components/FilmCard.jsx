@@ -14,12 +14,12 @@ const FilmCard = ({
     handleLike,
     handleDislike
 }) => {
-
+    
 return (
 
     <div className='container'>
         <Link to={`/film/${id}`}>
-            <img className='poster' src={poster} alt={title} />
+            <img className='poster' src={poster[0]} alt={title} />
             <h1>{title}</h1>
             <div>{date}</div>
             <div>{genre}</div>
