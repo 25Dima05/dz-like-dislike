@@ -1,30 +1,41 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { filmsData } from './data';
 
 export default function FilmDetail() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const [film, setFilm] = useState(null);
+  const { id } = useParams()
+  const film = filmsData.find(f => f.id === id)
+  const [idx, setIdx] = useState(0)
+  const t = useRef(null)
 
   useEffect(() => {
-    const found = filmsData.find((f) => f.id === id);
-    setFilm(found);
-  }, [id]);
+    if (t.current) clearInterval(t.current)
+    
+    if (!film || !film.poster?.length) return
 
-  if (!film) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: 40 }}>
-        <h2>Фильм не найден</h2>
-      </div>
-    );
-  }
+    setIdx(0)
+        t.current = setInterval(() => {
+            setIdx(i => {
+                const next = (i + 1) % film.poster.length
+
+                return next
+            })
+        }, 1000)
+
+    return () => clearInterval(t.current)
+  }, [film])
+
+  const imageSrc = film.poster[idx]
 
   return (
     <main>
-        <img src={film.poster} style={{ maxWidth: '500px'}}/>
         <h1>{film.title}</h1>
+        <img
+        src={imageSrc}
+        alt={film.title}
+        style={{ width: '400px', maxheight: 'auto', borderRadius: 8 }}
+        loading="lazy"
+      />
         <p>Год: {film.date}</p>
         <p>Жанр: {film.genre}</p>
         <p>Понравилось: {film.like}</p>
