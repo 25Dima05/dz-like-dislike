@@ -1,7 +1,8 @@
-import { useState, useEffect} from 'react'
-import { useSearchParams, useNavigate, BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState, useEffect, useReducer } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { likeMinus, dislikeMinus, likePlus, dislikePlus } from './components/utils'
 import { filmsData } from './components/data';
+import { filmReducer } from './components/reducer';
 import FilmCard from './components/FilmCard' 
 import Reactions from './components/Reactions'
 import CountView from './components/CountView'
@@ -22,31 +23,29 @@ const yearFrom = searchParams.get('date_from') || '';
 const yearTo = searchParams.get('date_to') || '';
 const genreFilter = searchParams.get('genre') || '';
 
-const setQueryParam = (key, value) => {
-const newParams = new URLSearchParams(searchParams.toString());
-    if (!value || value === '') {
-        newParams.delete(key);
-
-    } else {
-        newParams.set(key, value);
-    }
-
-    navigate(`?${newParams.toString()}`, { replace: true });
-};
-
 // // // Список фильмов
-const [films, setFilms] = useState([]);
-const [loading, setLoading] = useState(true);
+const [films, dispatch] = useReducer(filmReducer, [...filmsData]);
+const [isLoading, setIsLoading] = useState(true);
+
+const setQueryParam = (key, value) => {
+    const newParams = new URLSearchParams(searchParams.toString());
+        if (!value || value === '') newParams.delete(key); 
+
+        else newParams.set(key, value);
+
+        navigate(`?${newParams.toString()}`, { replace: true });
+};
 
 useEffect(() => {
     const timer = setTimeout(() => {
-        setFilms(filmsData);
-        setLoading(false);
-        }, 1000);
+        setIsLoading(false);
+    }, 1000);
 
-        return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
 }, []);
 
+    if (isLoading) return <p>Загрузка...</p>;
+    
 // // // Поиск
 let filteredFilms = [...films];
 
@@ -79,57 +78,21 @@ let filteredFilms = [...films];
     }
 
 // // // Сортировка
-    filteredFilms.sort((a, b) => {
-        const sumA = a.like + a.dislike;
-        const sumB = b.like + b.dislike;
+filteredFilms.sort((a, b) => {
+    const sumA = a.like + a.dislike;
+    const sumB = b.like + b.dislike;
 
-        return sumA - sumB;
-    });
+    return sumA - sumB;
+});
 
 // // // Списки понравилось/не понравилось
 const likedFilms = films.filter(film => film.likeFlag);
 const dislikedFilms = films.filter(film => film.dislikeFlag);
 
 // // // Функции лайка/дизлайка
-function handleLike(filmId) {
-    setFilms(prevFilms => 
-            prevFilms.map(film => {
-                
-            if (film.id !== filmId) return film;
+const handleLike = (filmId) => dispatch({ type: 'like', payload: filmId });
+const handleDislike = (filmId) => dispatch({ type: 'dislike', payload: filmId });
             
-            if (film.likeFlag) return likeMinus(film);
-
-            else {
-                if (film.dislikeFlag) {
-                    const updatedFilm = dislikeMinus(film);
-                    return likePlus(updatedFilm);
-                }
-            
-                return likePlus(film);
-            }
-        }) 
-    )  
-}
-
-function handleDislike(filmId) {
-    setFilms(prevFilms => 
-        prevFilms.map(film => {
-            if (film.id !== filmId) return film;
-
-            if (film.dislikeFlag) return dislikeMinus(film);
-
-            else {
-                if (film.likeFlag) {
-                    const updatedFilm = likeMinus(film);
-                    return dislikePlus(updatedFilm);
-                }
-
-                return dislikePlus(film);
-            }
-        })
-    )
-}
-
     return (
         <div>
             <div>
