@@ -11,6 +11,9 @@ const FilterFilms = ({
     searchYearTo,
     searchGenre,
 }) => {
+
+    const borderStyle = { marginRight: '8px', border: "2px solid violet", borderRadius: "8px" }
+
     const genres = [
         '',
         'триллер',
@@ -39,25 +42,25 @@ const FilterFilms = ({
             placeholder="Название фильма"
             value={title}
             onChange={(e) => searchTitle(e.target.value)}
-            style={{ marginRight: '8px', border: "2px solid violet" }}
+            style={borderStyle}
         />
         <input
             type="number"
             placeholder="Год от"
             value={yearFrom}
             onChange={(e) => searchYearFrom(e.target.value)}
-            style={{ marginRight: '8px', width: '80px', border: "2px solid violet" }}
+            style={borderStyle}
         />
         <input
             type="number"
             placeholder="Год до"
             value={yearTo}
             onChange={(e) => searchYearTo(e.target.value)}
-            style={{ marginRight: '8px', width: '80px', border: "2px solid violet" }}
+            style={borderStyle}
         />
         <select
             value={genreFilter}
-            style={{ marginRight: '8px', width: '100px', border: "2px solid violet" }}
+            style={borderStyle}
             onChange={(e) => searchGenre(e.target.value)}
             
         >
