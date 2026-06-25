@@ -1,12 +1,14 @@
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect, useReducer, useContext } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { likeMinus, dislikeMinus, likePlus, dislikePlus } from './components/utils'
 import { filmsData } from './components/data';
 import { filmReducer } from './components/reducer';
+import { ThemeContext } from './components/ThemeProvider';
 import FilmCard from './components/FilmCard' 
 import Reactions from './components/Reactions'
 import CountView from './components/CountView'
 import FilterFilms from './components/FilterFilms'
+import ThemeChange from './components/ThemeChange';
 import './App.css'
 
 function App() {
@@ -15,6 +17,11 @@ const textStyle = {
     color: "violet"
 }
 
+// // // Контекст
+const { theme, toggleTheme } = useContext(ThemeContext);
+console.log('ТЕМА В APP:', theme, 'toggleTheme:', typeof toggleTheme);
+
+// // // Переменные для поиска
 const [searchParams, setSearchParams] = useSearchParams();
 const navigate = useNavigate();
 
@@ -92,85 +99,93 @@ const dislikedFilms = films.filter(film => film.dislikeFlag);
 // // // Функции лайка/дизлайка
 const handleLike = (filmId) => dispatch({ type: 'like', payload: filmId });
 const handleDislike = (filmId) => dispatch({ type: 'dislike', payload: filmId });
+
+
             
     return (
-        <div>
-            <div>
-                <FilterFilms
-                    title={title}
-                    yearFrom={yearFrom}
-                    yearTo={yearTo}
-                    genreFilter={genreFilter}
-                    searchTitle={(value) => setQueryParam('search', value)}
-                    searchYearFrom={(value) => setQueryParam('date_from', value)}
-                    searchYearTo={(value) => setQueryParam('date_to', value)}
-                    searchGenre={(value) => setQueryParam('genre', value)}
-                />
+            <div className={theme}>
+                <div style={{display: 'flex', justifyContent: 'space-between', padding: "10px"}}>
+                    <FilterFilms
+                        title={title}
+                        yearFrom={yearFrom}
+                        yearTo={yearTo}
+                        genreFilter={genreFilter}
+                        searchTitle={(value) => setQueryParam('search', value)}
+                        searchYearFrom={(value) => setQueryParam('date_from', value)}
+                        searchYearTo={(value) => setQueryParam('date_to', value)}
+                        searchGenre={(value) => setQueryParam('genre', value)}
+                    />
 
-                {filteredFilms.length === 0 ? (
-                    <p>Ничего не найдено</p>
-                ) : (
-                filteredFilms.map(n => (
-                        <FilmCard
-                            key={n.id}
-                            id={n.id}
-                            title={n.title}
-                            poster={n.poster}
-                            date={n.date}
-                            genre={n.genre}
-                            like={n.like}
-                            dislike={n.dislike}
-                            likeFlag={n.likeFlag}
-                            dislikeFlag={n.dislikeFlag}
-                            handleLike={() => handleLike(n.id)}
-                            handleDislike={() => handleDislike(n.id)}
-                        /> 
-                    ))    
-                 )}
-                
-
-                <p>Мне понравилось ({likedFilms.length})</p>
-                {likedFilms.map(n => {
-                    return (
-                            <Reactions
-                            key={n.id}
-                            title={n.title}
-                            poster={n.poster}
-                            date={n.date}
-                            genre={n.genre}
-                            like={n.like}
-                            dislike={n.dislike}
-                            likeFlag={n.likeFlag}
-                            dislikeFlag={n.dislikeFlag}
-                            handleLike={() => handleLike(n.id)}
-                            handleDislike={() => handleDislike(n.id)}
-                        /> 
-                    )    
-                })}
-
-                <p>Мне не понравилось ({dislikedFilms.length})</p>
-                {dislikedFilms.map(n => {
-                    return (
-                            <Reactions
-                            key={n.id}
-                            title={n.title}
-                            poster={n.poster}
-                            date={n.date}
-                            genre={n.genre}
-                            like={n.like}
-                            dislike={n.dislike}
-                            likeFlag={n.likeFlag}
-                            dislikeFlag={n.dislikeFlag}
-                            handleLike={() => handleLike(n.id)}
-                            handleDislike={() => handleDislike(n.id)}
-                        /> 
-                    )    
-                })}
-            </div>
-                <div className='countView'>
-                    <CountView films={films}/>
+                    
+                        <ThemeChange theme={theme} toggleTheme={toggleTheme}/>
+                    
                 </div>
-        </div>
+
+                <div>
+                    {filteredFilms.length === 0 ? (
+                        <p>Ничего не найдено</p>
+                    ) : (
+                    filteredFilms.map(n => (
+                            <FilmCard
+                                key={n.id}
+                                id={n.id}
+                                title={n.title}
+                                poster={n.poster}
+                                date={n.date}
+                                genre={n.genre}
+                                like={n.like}
+                                dislike={n.dislike}
+                                likeFlag={n.likeFlag}
+                                dislikeFlag={n.dislikeFlag}
+                                handleLike={() => handleLike(n.id)}
+                                handleDislike={() => handleDislike(n.id)}
+                            /> 
+                        ))    
+                    )}
+                    
+
+                    <p>Мне понравилось ({likedFilms.length})</p>
+                    {likedFilms.map(n => {
+                        return (
+                                <Reactions
+                                key={n.id}
+                                title={n.title}
+                                poster={n.poster}
+                                date={n.date}
+                                genre={n.genre}
+                                like={n.like}
+                                dislike={n.dislike}
+                                likeFlag={n.likeFlag}
+                                dislikeFlag={n.dislikeFlag}
+                                handleLike={() => handleLike(n.id)}
+                                handleDislike={() => handleDislike(n.id)}
+                            /> 
+                        )    
+                    })}
+
+                    <p>Мне не понравилось ({dislikedFilms.length})</p>
+                    {dislikedFilms.map(n => {
+                        return (
+                                <Reactions
+                                key={n.id}
+                                title={n.title}
+                                poster={n.poster}
+                                date={n.date}
+                                genre={n.genre}
+                                like={n.like}
+                                dislike={n.dislike}
+                                likeFlag={n.likeFlag}
+                                dislikeFlag={n.dislikeFlag}
+                                handleLike={() => handleLike(n.id)}
+                                handleDislike={() => handleDislike(n.id)}
+                            /> 
+                        )    
+                    })}
+                </div>
+                    <div className='countView'>
+                        <CountView films={films}/>
+                    </div>
+            </div>
     )
 }
 
