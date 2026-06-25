@@ -65,3 +65,11 @@
     height: 280px;
     width: 240px;
 }
+
+.light {
+    background-color: rgba(255, 255, 255, 0.623);
+}
+
+.dark {
+    background-color: rgba(0, 0, 0, 0.082);
+}
