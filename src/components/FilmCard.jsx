@@ -1,7 +1,9 @@
+import React from 'react'; 
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import '../App.css'
 
-const FilmCard = ({
+const FilmCard = React.memo(({
     id,
     title,
     poster,
@@ -43,7 +45,7 @@ return (
             </div>
         </div>    
     </div>
-    
-)}
+)
+})
 
 export default FilmCard

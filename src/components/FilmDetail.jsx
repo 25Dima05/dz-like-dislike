@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
-import { filmsData } from './data';
+import { filmsData } from '../data/data';
 
 export default function FilmDetail() {
   const { id } = useParams()
@@ -20,7 +20,7 @@ export default function FilmDetail() {
 
                 return next
             })
-        }, 1000)
+        }, 3000)
 
     return () => clearInterval(t.current)
   }, [film])
