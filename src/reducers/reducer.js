@@ -1,4 +1,4 @@
-import { likeMinus, dislikeMinus, likePlus, dislikePlus } from './utils';
+import { likeMinus, dislikeMinus, likePlus, dislikePlus } from '../utils/utils';
 
 export function filmReducer(state, action) {
     switch (action.type) {

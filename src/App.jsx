@@ -1,8 +1,7 @@
-import { useState, useEffect, useReducer, useContext } from 'react'
+import { useState, useEffect, useReducer, useContext, useMemo } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { likeMinus, dislikeMinus, likePlus, dislikePlus } from './components/utils'
-import { filmsData } from './components/data';
-import { filmReducer } from './components/reducer';
+import { filmsData } from './data/data';
+import { filmReducer } from './reducers/reducer';
 import { ThemeContext } from './components/ThemeProvider';
 import FilmCard from './components/FilmCard' 
 import Reactions from './components/Reactions'
@@ -19,7 +18,6 @@ const textStyle = {
 
 // // // Контекст
 const { theme, toggleTheme } = useContext(ThemeContext);
-console.log('ТЕМА В APP:', theme, 'toggleTheme:', typeof toggleTheme);
 
 // // // Переменные для поиска
 const [searchParams, setSearchParams] = useSearchParams();
@@ -46,14 +44,15 @@ const setQueryParam = (key, value) => {
 useEffect(() => {
     const timer = setTimeout(() => {
         setIsLoading(false);
-    }, 1000);
+    }, 1500);
 
     return () => clearTimeout(timer);
 }, []);
 
-    if (isLoading) return <p>Загрузка...</p>;
+    
     
 // // // Поиск
+const resultFilteredFilms = useMemo(() => {  
 let filteredFilms = [...films];
 
     if (title.trim()) {
@@ -85,12 +84,13 @@ let filteredFilms = [...films];
     }
 
 // // // Сортировка
-filteredFilms.sort((a, b) => {
+return filteredFilms.toSorted((a, b) => {
     const sumA = a.like + a.dislike;
     const sumB = b.like + b.dislike;
 
     return sumA - sumB;
 });
+}, [films, title, yearFrom, yearTo, genreFilter]);
 
 // // // Списки понравилось/не понравилось
 const likedFilms = films.filter(film => film.likeFlag);
@@ -100,6 +100,7 @@ const dislikedFilms = films.filter(film => film.dislikeFlag);
 const handleLike = (filmId) => dispatch({ type: 'like', payload: filmId });
 const handleDislike = (filmId) => dispatch({ type: 'dislike', payload: filmId });
 
+if (isLoading) return <p>Загрузка...</p>;
 
             
     return (
@@ -122,10 +123,10 @@ const handleDislike = (filmId) => dispatch({ type: 'dislike', payload: filmId })
                 </div>
 
                 <div>
-                    {filteredFilms.length === 0 ? (
+                    {resultFilteredFilms.length === 0 ? (
                         <p>Ничего не найдено</p>
                     ) : (
-                    filteredFilms.map(n => (
+                    resultFilteredFilms.map(n => (
                             <FilmCard
                                 key={n.id}
                                 id={n.id}
