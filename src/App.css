@@ -1,0 +1,25 @@
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    display: flex;
+    justify-self: center;
+
+    height: 192px;
+    width: 256px;
+
+    border: 2px solid black;
+}
+input {
+    margin: 10px;
+}
+
+button {
+    margin: 10px;
+}
+
+.important {
+    background-color: red;
+}

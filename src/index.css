@@ -95,14 +95,6 @@ p {
   margin: 0;
 }
 
-input {
-  margin: 10px;
-}
-
-button {
-  margin: 10px;
-}
-
 code,
 .counter {
   font-family: var(--mono);
