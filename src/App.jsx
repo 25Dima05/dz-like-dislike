@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer, useContext, useMemo } from 'react'
+import { useState, useEffect, useReducer, useContext, useMemo, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { filmsData } from './data/data';
 import { filmReducer } from './reducers/reducer';
@@ -23,10 +23,12 @@ const { theme, toggleTheme } = useContext(ThemeContext);
 const [searchParams, setSearchParams] = useSearchParams();
 const navigate = useNavigate();
 
-const title = searchParams.get('search') || '';
-const yearFrom = searchParams.get('date_from') || '';
-const yearTo = searchParams.get('date_to') || '';
-const genreFilter = searchParams.get('genre') || '';
+const filters = useMemo(() => ({
+    title: searchParams.get('search') || '',
+    yearFrom: searchParams.get('date_from') || '',
+    yearTo: searchParams.get('date_to') || '',
+    genreFilter: searchParams.get('genre') || ''
+}), [searchParams]);
 
 // // // Список фильмов
 const [films, dispatch] = useReducer(filmReducer, [...filmsData]);
@@ -55,50 +57,54 @@ useEffect(() => {
 const resultFilteredFilms = useMemo(() => {  
 let filteredFilms = [...films];
 
-    if (title.trim()) {
-        const q = title.trim().toLowerCase();
+    if (filters.title.trim()) {
+        const q = filters.title.trim().toLowerCase();
         filteredFilms = filteredFilms.filter((f) =>
             f.title.toLowerCase().includes(q)
         )
     }
 
-    if (yearFrom.trim()) {
-        const year = Number(yearFrom);
+    if (filters.yearFrom.trim()) {
+        const year = Number(filters.yearFrom);
         if (!Number.isNaN(year)) {
             filteredFilms = filteredFilms.filter((f) => Number(f.date) >= year);
         }
     }
 
-    if (yearTo.trim()) {
-        const toYear = Number(yearTo);
+    if (filters.yearTo.trim()) {
+        const toYear = Number(filters.yearTo);
         if (!Number.isNaN(toYear)) {
             filteredFilms = filteredFilms.filter((f) => Number(f.date) <= toYear);
         }
     }
 
-    if (genreFilter) {
-        const g = genreFilter.toLowerCase();
+    if (filters.genreFilter) {
+        const g = filters.genreFilter.toLowerCase();
         filteredFilms = filteredFilms.filter((f) =>
             f.genre.toLowerCase().includes(g)
         );
     }
 
-// // // Сортировка
-return filteredFilms.toSorted((a, b) => {
-    const sumA = a.like + a.dislike;
-    const sumB = b.like + b.dislike;
+    return filteredFilms;
+}, [films, filters]);
 
-    return sumA - sumB;
-});
-}, [films, title, yearFrom, yearTo, genreFilter]);
+// // // Сортировка
+const sortedFilms = useMemo(() => {
+    return [...resultFilteredFilms].sort((a, b) => {
+        const sumA = (a.like || 0) + (a.dislike || 0);
+        const sumB = (b.like || 0) + (b.dislike || 0);
+
+        return sumA - sumB;
+    })
+ }, [resultFilteredFilms]);
 
 // // // Списки понравилось/не понравилось
 const likedFilms = films.filter(film => film.likeFlag);
 const dislikedFilms = films.filter(film => film.dislikeFlag);
 
 // // // Функции лайка/дизлайка
-const handleLike = (filmId) => dispatch({ type: 'like', payload: filmId });
-const handleDislike = (filmId) => dispatch({ type: 'dislike', payload: filmId });
+const handleLike = useCallback((filmId) => dispatch({ type: 'like', payload: filmId }), [dispatch]);
+const handleDislike = useCallback((filmId) => dispatch({ type: 'dislike', payload: filmId }), [dispatch]);
 
 if (isLoading) return <p>Загрузка...</p>;
 
@@ -107,10 +113,10 @@ if (isLoading) return <p>Загрузка...</p>;
             <div className={theme}>
                 <div style={{display: 'flex', justifyContent: 'space-between', padding: "10px"}}>
                     <FilterFilms
-                        title={title}
-                        yearFrom={yearFrom}
-                        yearTo={yearTo}
-                        genreFilter={genreFilter}
+                        title={filters.title}
+                        yearFrom={filters.yearFrom}
+                        yearTo={filters.yearTo}
+                        genreFilter={filters.genreFilter}
                         searchTitle={(value) => setQueryParam('search', value)}
                         searchYearFrom={(value) => setQueryParam('date_from', value)}
                         searchYearTo={(value) => setQueryParam('date_to', value)}
@@ -123,10 +129,10 @@ if (isLoading) return <p>Загрузка...</p>;
                 </div>
 
                 <div>
-                    {resultFilteredFilms.length === 0 ? (
+                    {sortedFilms.length === 0 ? (
                         <p>Ничего не найдено</p>
                     ) : (
-                    resultFilteredFilms.map(n => (
+                    sortedFilms.map(n => (
                             <FilmCard
                                 key={n.id}
                                 id={n.id}
